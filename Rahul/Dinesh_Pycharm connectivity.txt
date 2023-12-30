@@ -1,0 +1,116 @@
+import pyspark
+from pyspark.sql import SparkSession
+import mysql.connector
+from pyspark.sql.functions import *
+
+
+
+
+spark = SparkSession.builder.config("SPARK.jars","mysql-connector-java-8.0.30").master("local")\
+    .appName("pyspark_mysql_connection").getOrCreate()
+
+df_employees = spark.read.format("jdbc")\
+    .option("url","jdbc:mysql://localhost:3306/employees")\
+    .option("driver","com.mysql.jdbc.Driver")\
+    .option("dbtable","employees")\
+    .option("User","root")\
+    .option("password","mysql").load()
+
+print(df_employees)
+df_employees.show()
+
+
+
+
+df_employees = spark.read.format("jdbc")\
+    .option("url","jdbc:mysql://localhost:3306/employees")\
+    .option("driver","com.mysql.jdbc.Driver")\
+    .option("dbtable","employees")\
+    .option("User","root")\
+    .option("password","mysql").load()
+
+print(df_employees)
+df_employees.show()
+
+
+
+df_departments = spark.read.format("jdbc")\
+    .option("url","jdbc:mysql://localhost:3306/employees")\
+    .option("driver","com.mysql.jdbc.Driver")\
+    .option("dbtable","departments")\
+    .option("User","root")\
+    .option("password","mysql").load()
+
+print(df_departments)
+df_departments.show()
+
+
+df_salaries = spark.read.format("jdbc")\
+    .option("url","jdbc:mysql://localhost:3306/employees")\
+    .option("driver","com.mysql.jdbc.Driver")\
+    .option("dbtable","salaries")\
+    .option("User","root")\
+    .option("password","mysql").load()
+
+print(df_salaries)
+df_salaries.show()
+
+
+df_titles = spark.read.format("jdbc")\
+    .option("url","jdbc:mysql://localhost:3306/employees")\
+    .option("driver","com.mysql.jdbc.Driver")\
+    .option("dbtable","titles")\
+    .option("User","root")\
+    .option("password","mysql").load()
+
+
+print(df_titles)
+df_titles.show()
+
+
+df_dept_manager = spark.read.format("jdbc")\
+    .option("url","jdbc:mysql://localhost:3306/employees")\
+    .option("driver","com.mysql.jdbc.Driver")\
+    .option("dbtable","dept_manager")\
+    .option("User","root")\
+    .option("password","mysql").load()
+
+
+print(df_dept_manager)
+df_dept_manager.show()
+
+
+
+df_join = df_employees.join(df_salaries, df_employees.emp_no == df_salaries.emp_no, "inner" )\
+    .join(df_titles, df_employees.emp_no == df_titles.emp_no, "inner")\
+    .join(df_dept_manager, df_employees.emp_no == df_dept_manager.emp_no, "inner")\
+    .select(df_employees["emp_no"],df_employees["first_name"],df_employees["last_name"],df_salaries["salary"],df_titles["title"]\
+     ,df_dept_manager["dept_no"])
+
+df_join.show()
+
+
+df_final_join = df_join.join(df_departments,df_join.dept_no ==df_departments.dept_no ).\
+    select(df_join["emp_no"],df_join["first_name"],df_join["last_name"],df_join["salary"],df_join["title"]\
+        ,df_join["dept_no"],df_departments["dept_name"])
+
+df_final_join.show()
+
+
+df_final_join.persist(pyspark.StorageLevel.DISK_ONLY)
+
+
+
+df_final_join.coalesce(1).write.mode("overwrite")\
+    .option("header",True).csv(r"C:\Users\Dinesh Shejwal\OneDrive\Desktop\emp_output")
+
+
+
+
+
+
+
+
+
+
+
