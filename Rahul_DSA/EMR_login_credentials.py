@@ -12,3 +12,6 @@ df.write.format("csv").option("header","true").save(output)
 
 # output=sys.argv[3]
 # df.write.format("csv").option("header","true").save(output)
+
+# output=sys.argv[3]
+# df.write.format("csv").option("header","true").save(output)
