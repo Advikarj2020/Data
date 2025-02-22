@@ -1,0 +1,2 @@
+  // df1 = pd.read_sql('SELECT * FROM actor where actor_id between 1 and 10', mydb)
+// print(df1)
