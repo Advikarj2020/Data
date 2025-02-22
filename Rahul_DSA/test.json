@@ -1,0 +1,7 @@
+<<<<<<< HEAD
+output=sys.argv[3]
+df.write.format("csv").option("header","true").save(output)
+=======
+# output=sys.argv[3]
+# df.write.format("csv").option("header","true").save(output)
+>>>>>>> fbcc433029d6244b537b7a075b949921d70ad99e
